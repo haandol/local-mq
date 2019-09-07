@@ -1,0 +1,29 @@
+{
+  "name": "local-mq",
+  "version": "1.0.0",
+  "description": "simple local message queue using event emitter",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haandol/local-mq.git"
+  },
+  "keywords": [
+    "local",
+    "mq"
+  ],
+  "author": "haandol <ldg55d@gmail.com> (http://haandol.github.io)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/haandol/local-mq/issues"
+  },
+  "homepage": "https://github.com/haandol/local-mq#readme",
+  "dependencies": {
+    "@types/node": "^12.7.4",
+    "source-map-support": "^0.5.13",
+    "winston": "^3.2.1"
+  }
+}
