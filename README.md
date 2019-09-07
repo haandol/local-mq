@@ -2,7 +2,7 @@
 
 simple local message queue using event emitter.
 
-you can use this library for mocking mqtt or rabbitmq.
+you can use this library for mocking mqtt or amqp.
 
 # Install
 
