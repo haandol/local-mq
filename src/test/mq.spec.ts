@@ -5,12 +5,17 @@ import { MQ } from '../mq';
 const mq = MQ.getInstance();
 
 describe("generate wildcard patterns using key", () => {
-  it("with no wildcard", () => {
+  it("1 depth", () => {
     const key = 'match';
     assert.deepEqual([key], mq.getPatterns(key));
   });
 
-  it("with wildcard", () => {
+  it("2 depths", () => {
+    const key = 'chat.channel';
+    assert.deepEqual([key, 'chat.#'], mq.getPatterns(key));
+  });
+
+  it("3 depths", () => {
     const key = 'chat.channel.join';
     assert.deepEqual([key, 'chat.channel.#', 'chat.#'], mq.getPatterns(key));
   });

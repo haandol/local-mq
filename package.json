@@ -23,12 +23,15 @@
   },
   "homepage": "https://github.com/haandol/local-mq#readme",
   "dependencies": {
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^12.7.4",
-    "@types/sinon": "^7.0.13",
-    "mocha": "^6.2.0",
-    "sinon": "^7.4.2",
     "source-map-support": "^0.5.13",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.0",
+    "sinon": "^7.4.2",
+    "typescript": "^3.6.2",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.4",
+    "@types/sinon": "^7.0.13"
   }
 }
