@@ -56,17 +56,19 @@ export class MQ {
       this.queue[key] = [];
     } 
 
-    this.broker.on(key, () => {
+    this.broker.on(key, async() => {
       const ev = this.queue[key].shift();
       if (!ev) {
         logger.error('empty eventQ');
         return;
       }
 
-      handler(ev).catch(e => {
+      try {
+        await handler(ev);
+      } catch (e) {
         logger.error(e);
         throw e;
-      });
+      }
     });
 
     // recv remaining messages

@@ -27,8 +27,8 @@ const event = {
   }
 }
 
-mq.subscribe('session.#', async (ev) => console.log(ev));
-mq.subscribe('session.created', async (ev) => console.log(ev));
+mq.subscribe('session.#', async(ev) => console.log(ev));
+mq.subscribe('session.created', async(ev) => console.log(ev));
 
 mq.publish(event);
 ```
