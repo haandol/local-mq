@@ -58,7 +58,7 @@ export class MQ {
     this.broker.on(key, async() => {
       const ev = this.queue[key].shift();
       if (!ev) {
-        logger.error('empty eventQ');
+        logger.error(`empty queue: ${key}`);
         return;
       }
 
@@ -72,10 +72,7 @@ export class MQ {
 
     // recv remaining messages
     for (let i = 0; i < this.queue[key].length; i++) {
-      const ev = this.queue[key][i];
-      for (const k of this.getPatterns(ev.key)) {
-        setTimeout(() => this.broker.emit(k), 0);
-      }
+      setTimeout(() => this.broker.emit(key), 0);
     };
   }
 
