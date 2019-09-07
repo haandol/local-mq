@@ -26,7 +26,7 @@ describe("publish", () => {
     mq.reset();
   });
 
-  it("publish events", async () => {
+  it("publish without consumer", async() => {
     const ev = {
       key: 'channel.joined',
       args: {
@@ -49,23 +49,23 @@ describe("subscribe", () => {
     mq.reset();
   });
 
-  it("subscribe without wildcard", async () => {
+  it("subscribe without wildcard", async() => {
     const key = 'session.created';
     assert.equal(0, Object.keys(mq.queue).length);
     assert.equal(undefined, mq.queue[key]);
 
-    mq.subscribe(key, async (ev) => console.log(ev));
+    mq.subscribe(key, async(ev) => console.log(ev));
 
     assert.deepEqual([], mq.queue[key]);
     assert.equal(1, Object.keys(mq.queue).length);
   });
 
-  it("subscribe with wildcard", async () => {
+  it("subscribe with wildcard", async() => {
     const key = 'session.#';
     assert.equal(0, Object.keys(mq.queue).length);
     assert.equal(undefined, mq.queue[key]);
 
-    mq.subscribe(key, async (ev) => console.log(ev));
+    mq.subscribe(key, async(ev) => console.log(ev));
 
     assert.deepEqual([], mq.queue[key]);
     assert.equal(1, Object.keys(mq.queue).length);
@@ -77,9 +77,9 @@ describe("pub/sub", () => {
     mq.reset();
   });
 
-  it("pub/sub key without wildcard", async () => {
+  it("pub/sub key without wildcard", async() => {
     const spyHandler = sinon.spy();
-    mq.subscribe('session.created', async (ev) => spyHandler(ev));
+    mq.subscribe('session.created', async(ev) => spyHandler(ev));
     mq.publish({
       key: 'session.created',
       args: {
@@ -97,9 +97,9 @@ describe("pub/sub", () => {
     assert.equal(1, spyHandler.callCount);
   });
 
-  it("pub/sub key with wildcard", async () => {
+  it("pub/sub key with wildcard", async() => {
     const spyHandler = sinon.spy();
-    mq.subscribe('session.#', async (ev) => spyHandler(ev));
+    mq.subscribe('session.#', async(ev) => spyHandler(ev));
     mq.publish({
       key: 'session.created',
       args: {
@@ -114,6 +114,30 @@ describe("pub/sub", () => {
         user: 'haandol',
       }
     });
+    assert.equal(2, spyHandler.callCount);
+  });
+
+  it("msg pub before sub will be processed eventually", async() => {
+    const wildcardKey = 'session.#';
+
+    mq.publish({
+      key: 'session.created',
+      args: {
+        user: 'haandol',
+      }
+    });
+    assert.equal(1, mq.queue[wildcardKey].length);
+
+    mq.publish({
+      key: 'session.expired',
+      args: {
+        user: 'haandol',
+      }
+    });
+    assert.equal(2, mq.queue[wildcardKey].length);
+
+    const spyHandler = sinon.spy();
+    mq.subscribe(wildcardKey, async(ev) => spyHandler(ev));
     assert.equal(2, spyHandler.callCount);
   });
 

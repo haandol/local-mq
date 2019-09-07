@@ -26,8 +26,9 @@ export class MQ {
   }
 
   getPatterns(s: string): string[] {
-    const result = [s];
+    if (!s || s.length === 0) return [];
 
+    const result = [s];
     let endIndex = s.lastIndexOf(SEP);
     while (0 < endIndex) {
       const subs = s.slice(0, endIndex);
@@ -42,7 +43,7 @@ export class MQ {
     const patterns = this.getPatterns(ev.key);
     patterns.forEach(key => {
       if (!this.queue[key]) {
-        this.queue[key] = new Array();
+        this.queue[key] = [];
       }
 
       this.queue[key].push(ev);
@@ -53,7 +54,7 @@ export class MQ {
   subscribe(key: string, handler: (ev: IEvent) => Promise<void>): void {
     if (!this.queue[key]) {
       this.queue[key] = [];
-    }
+    } 
 
     this.broker.on(key, () => {
       const ev = this.queue[key].shift();
@@ -67,6 +68,12 @@ export class MQ {
         throw e;
       });
     });
+
+    // recv remaining messages
+    for (let i = 0; i < this.queue[key].length; i++) {
+      const patterns = this.getPatterns(key);
+      patterns.forEach(k => this.broker.emit(k));
+    };
   }
 
   reset(): void {
