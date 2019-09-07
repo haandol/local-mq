@@ -42,7 +42,7 @@ export class MQ {
     const patterns = this.getPatterns(ev.key);
     patterns.forEach(key => {
       if (!this.queue[key]) {
-        this.queue[key] = [];
+        this.queue[key] = new Array();
       }
 
       this.queue[key].push(ev);
@@ -51,11 +51,11 @@ export class MQ {
   }
 
   subscribe(key: string, handler: (ev: IEvent) => Promise<void>): void {
-    this.broker.on(key, () => {
-      if (!this.queue[key]) {
-        this.queue[key] = [];
-      }
+    if (!this.queue[key]) {
+      this.queue[key] = [];
+    }
 
+    this.broker.on(key, () => {
       const ev = this.queue[key].shift();
       if (!ev) {
         logger.error('empty eventQ');
@@ -67,5 +67,13 @@ export class MQ {
         throw e;
       });
     });
+  }
+
+  reset(): void {
+    for (const key in this.queue) {
+      this.queue[key] = [];
+    }
+    this.queue = {};
+    this.broker.removeAllListeners();
   }
 }
