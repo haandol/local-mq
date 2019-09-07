@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import assert from 'assert';
 import { MQ } from '../mq';
+import { createPublicKey } from 'crypto';
 
 const mq = MQ.getInstance();
 
@@ -133,8 +134,10 @@ describe("pub/sub", () => {
     assert.equal(4, mq.queue[ev.key].length);
     assert.equal(4, mq.queue[wildcardKey].length);
 
+    const clock = sinon.useFakeTimers();
     const spyHandler = sinon.spy();
     mq.subscribe(wildcardKey, async(ev) => spyHandler(ev));
+    clock.runAll();
     assert.equal(4, spyHandler.callCount);
   });
 

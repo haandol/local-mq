@@ -53,7 +53,7 @@ export class MQ {
   subscribe(key: string, handler: (ev: IEvent) => Promise<void>): void {
     if (!this.queue[key]) {
       this.queue[key] = [];
-    } 
+    }
 
     this.broker.on(key, async() => {
       const ev = this.queue[key].shift();
@@ -71,10 +71,10 @@ export class MQ {
     });
 
     // recv remaining messages
-    const patterns = this.getPatterns(key);
     for (let i = 0; i < this.queue[key].length; i++) {
-      for (const k of patterns) {
-        this.broker.emit(k);
+      const ev = this.queue[key][i];
+      for (const k of this.getPatterns(ev.key)) {
+        setTimeout(() => this.broker.emit(k), 0);
       }
     };
   }
