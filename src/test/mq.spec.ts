@@ -119,26 +119,23 @@ describe("pub/sub", () => {
 
   it("msg pub before sub will be processed eventually", async() => {
     const wildcardKey = 'session.#';
-
-    mq.publish({
+    const ev = {
       key: 'session.created',
       args: {
         user: 'haandol',
       }
-    });
-    assert.equal(1, mq.queue[wildcardKey].length);
+    }
 
-    mq.publish({
-      key: 'session.expired',
-      args: {
-        user: 'haandol',
-      }
-    });
-    assert.equal(2, mq.queue[wildcardKey].length);
+    mq.publish(ev);
+    mq.publish(ev);
+    mq.publish(ev);
+    mq.publish(ev);
+    assert.equal(4, mq.queue[ev.key].length);
+    assert.equal(4, mq.queue[wildcardKey].length);
 
     const spyHandler = sinon.spy();
     mq.subscribe(wildcardKey, async(ev) => spyHandler(ev));
-    assert.equal(2, spyHandler.callCount);
+    assert.equal(4, spyHandler.callCount);
   });
 
 });

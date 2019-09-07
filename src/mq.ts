@@ -40,15 +40,14 @@ export class MQ {
   }
 
   publish(ev: IEvent): void {
-    const patterns = this.getPatterns(ev.key);
-    patterns.forEach(key => {
+    for (const key of this.getPatterns(ev.key)) {
       if (!this.queue[key]) {
         this.queue[key] = [];
       }
 
       this.queue[key].push(ev);
       this.broker.emit(key);
-    });
+    }
   }
 
   subscribe(key: string, handler: (ev: IEvent) => Promise<void>): void {
@@ -72,9 +71,11 @@ export class MQ {
     });
 
     // recv remaining messages
+    const patterns = this.getPatterns(key);
     for (let i = 0; i < this.queue[key].length; i++) {
-      const patterns = this.getPatterns(key);
-      patterns.forEach(k => this.broker.emit(k));
+      for (const k of patterns) {
+        this.broker.emit(k);
+      }
     };
   }
 
