@@ -56,11 +56,10 @@ export class MQ {
     }
 
     this.broker.on(key, async() => {
+      if (0 === this.queue[key].length) return;
+
       const ev = this.queue[key].shift();
-      if (!ev) {
-        logger.error(`empty queue: ${key}`);
-        return;
-      }
+      if (!ev) return;
 
       try {
         await handler(ev);

@@ -1,8 +1,8 @@
 # Local MQ
 
-simple local message queue using event emitter.
+simple local message queue using EventEmitter.
 
-you can use this library for mocking mqtt or amqp.
+you can use this library for mocking mqtt or amqp with QoS0.
 
 # Install
 
@@ -14,7 +14,7 @@ you can use this library for mocking mqtt or amqp.
 2. call `getInstance()`
 3. call `subscribe()`, `publish()`
 
-```
+```typescript
 const localMQ = require('local-mq');
 
 const mq = localMQ.MQ.getInstance();
