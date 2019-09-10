@@ -71,7 +71,7 @@ export class MQ {
 
     // recv remaining messages
     for (let i = 0; i < this.queue[key].length; i++) {
-      setTimeout(() => this.broker.emit(key), 0);
+      setImmediate(() => this.broker.emit(key));
     };
   }
 
